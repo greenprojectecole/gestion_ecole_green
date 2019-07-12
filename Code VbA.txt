@@ -1,0 +1,60 @@
+
+/// ouvrir ou parcourir folder
+
+Dim fdialog As Office.FileDialog
+Dim fs As Variant
+Set fdialog = Application.FileDialog(msoFileDialogFilePicker)
+
+With fdialog
+.Filters.Add "Ms.Access Files", "*.jpg; *.png; *.bmp"
+
+If .Show Then
+fs = .SelectedItems(1)  'get file
+txt_path_photo.Value = fs 'add select value to textbox
+
+If fs <> "" Then
+DoCmd.RunMacro "Macro1"
+txt_path_photo.Value = fs
+
+End If
+End If
+
+End With
+
+Set fdialog = Nothing
+
+/// fin ouvrir ou parcourir folder
+
+
+// Load info ecole 
+
+SqlStringRequete = "SELECT * FROM Tb_info_ecole;"
+rSQL.Open SqlStringRequete, CurrentProject.Connection
+
+Do While Not rSQL.EOF
+nomEcole = rSQL!Nom_ecole
+adresse = rSQL!Adresse_ecole
+slogan = rSQL!Slogan_ecole
+telephone = rSQL!Telephone_ecole
+path = rSQL!Photo_ecole
+
+'If typeUtilisateur = "Directeur" Then
+'DoCmd.OpenForm "Frm_navigation_Accueil"
+'DoCmd.Close acForm, "Frm_connexion", acSaveNo
+
+Form_Frm_Accueil.lb_nom_ecole.Caption = nomEcole
+Form_Frm_Accueil.lb_adresse_ecole.Caption = adresse
+Form_Frm_Accueil.lb_slogan_ecole.Caption = slogan
+Form_Frm_Accueil.lb_telephone_ecole.Caption = telephone
+Form_Frm_Accueil.img_ecole.Picture = path
+'Form_Frm_navigation_Accueil.lb_type_utilisateur.Caption = typeUtilisateur
+
+'MsgBox nomEcole
+'End If
+rSQL.MoveNext
+
+Loop
+rSQL.Close
+Set rSQL = Nothing
+''" & Me.txt_nom_utilisateur & "','" & Me.txt_Mot_de_passe & "'
+// fin load info ecole 
