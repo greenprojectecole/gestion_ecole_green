@@ -1,5 +1,5 @@
 
-/// ouvrir ou parcourir folder
+///  ================== ouvrir ou parcourir folder========================
 
 Dim fdialog As Office.FileDialog
 Dim fs As Variant
@@ -23,10 +23,10 @@ End With
 
 Set fdialog = Nothing
 
-/// fin ouvrir ou parcourir folder
+/// ===================== fin ouvrir ou parcourir folder ====================
 
 
-// Load info ecole 
+// ============================= Load info ecole ================================== 
 
 SqlStringRequete = "SELECT * FROM Tb_info_ecole;"
 rSQL.Open SqlStringRequete, CurrentProject.Connection
@@ -57,4 +57,47 @@ Loop
 rSQL.Close
 Set rSQL = Nothing
 ''" & Me.txt_nom_utilisateur & "','" & Me.txt_Mot_de_passe & "'
-// fin load info ecole 
+//========================== fin load info ecole ===================================================
+
+
+// code Connexion =========================================
+
+Option Compare Database
+Dim db As ADODB.Connection
+Dim rs As ADODB.Recordset
+Dim rSQL As New ADODB.Recordset
+Dim SqlStringRequete, typeUtilisateur, nomComplet, utilisateur As String
+
+
+Private Sub btn_connecter_Click()
+If Trim(Me.txt_nom_utilisateur.Value & vbNullString) = vbNullString Then
+MsgBox "Entrer nom utilisateur"
+
+ElseIf Trim(Me.txt_mot_de_passe.Value & vbNullString) = vbNullString Then
+MsgBox "Entrer le Mot de passe", vbExclamation, "Erreur"
+End If
+
+SqlStringRequete = "SELECT * FROM Tb_utilisateur WHERE Nom_utilisateur ='" & Me.txt_nom_utilisateur & "' AND Mot_de_passe = '" & Me.txt_mot_de_passe & "';"
+rSQL.Open SqlStringRequete, CurrentProject.Connection
+
+Do While Not rSQL.EOF
+typeUtilisateur = rSQL!Type_utilisateur
+utilisateur = rSQL!Nom_utilisateur
+'nomComplet = rSQL!Nom_complet
+
+If typeUtilisateur = "Directeur" Then
+DoCmd.OpenForm "Frm_navigation_Accueil"
+DoCmd.Close acForm, "Frm_connexion", acSaveNo
+Form_Frm_navigation_Accueil.lb_nom_utilisateur.Caption = utilisateur
+Form_Frm_navigation_Accueil.lb_type_utilisateur.Caption = typeUtilisateur
+
+'MsgBox typeUtilisateur
+End If
+rSQL.MoveNext
+
+Loop
+rSQL.Close
+Set rSQL = Nothing
+''" & Me.txt_nom_utilisateur & "','" & Me.txt_Mot_de_passe & "'
+End Sub
+// fin connexion =====================================================
